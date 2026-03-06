@@ -2,18 +2,19 @@ pipeline {
     agent any
 
     tools {
-        jdk 'jdk11'
-        maven 'maven3'
+        maven 'Maven'
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/your-repo/myapp.git'
-            }
-        }
 
-        stage('Build') {
+        stage('Checkout Code') {
+    steps {
+        git branch: 'main',
+            url: 'https://github.com/milind55555/Java-maven-jenkins-tomcat-CICD.git'
+    }
+}
+
+        stage('Build WAR') {
             steps {
                 sh 'mvn clean package'
             }
@@ -21,12 +22,15 @@ pipeline {
 
         stage('Deploy to Tomcat') {
             steps {
-                deploy adapters: [tomcat9(
-                    credentialsId: 'tomcat-creds',
-                    url: 'http://localhost:8080'
-                )],
-                contextPath: 'jenkins_tomcat_javaApp',
-                war: '**/target/ROOT.war'
+                deploy adapters: [
+                    tomcat9(
+                        credentialsId: 'tomcat-cred',
+                        path: '',
+                        url: 'http://13.232.36.63:8080'
+                    )
+                ],
+                contextPath: '',
+                war: 'ROOT.war'
             }
         }
     }
